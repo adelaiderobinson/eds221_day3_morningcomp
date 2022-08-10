@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
+library(palmerpenguins)
 
 ```
 
@@ -39,6 +40,71 @@ if(str_detect(phrase, "love")) {
   print("I am a burrito fan")
 }
 
+```
+
+## for loops
+
+```{r}
+tree_height <- c(1, 2, 6, 10, 14, 20)
+# I want to add each number in the vector to the next number
+for( i in seq_along(tree_height)){
+  val = tree_height[i] + tree_height[i + 1]
+  print(val)
+}
+
+
+
+```
+
+```{r}
+# with a conditional statement
+# dogs years 7, elephant 0.88, goat age 4.7
+#make an empty vector
+converted_ages <- vector(mode = "numeric", length = length(species))
+#create the for loop
+species <- c("dog", "elephant", "goat", "dog", "dog", "elephant")
+age_human <- c(3, 8, 4, 6, 12, 18)
+for(i in seq_along(species)){
+  if (species [i] == "dog"){
+    animal_age <- age_human[i] * 7
+  } else if (species [i] == "elephant") {
+    animal_age <- age_human [i] * 0.88
+  } else if (species [i] == "goat"){
+    animal_age <- age_human[i] * 4.7
+  }
+ # print(animal_age) if you just want it to print
+  converted_ages[i] <- animal_age
+  }
+
+
+```
+
+### for loops across data frames
+
+```{r}
+mean_mtcars <- vector(mode = "numeric", length = ncol(mtcars))
+for (i in seq_along(mtcars)){
+  mean_val <- mean(mtcars[[i]], na.rm = TRUE)
+  mean_mtcars[i] <- mean_val
+}
+mean_mtcars
+
+
+```
+
+### adding syntactic sugar
+
+### many ways to write for loops in r
+
+```{r}
+apply(X = mtcars, MARGIN = 2, FUN = mean)
+
+```
+
+```{r}
+map(.x = mtcars, .f = mean)
+#returns as a data frame
+map_df(.x = mtcars, .f = mean)
 ```
 
 ## If else statement
@@ -77,5 +143,40 @@ tatooine_characters <- starwars |>
 #check for multiple positive mataches
 tataooine_endor_naboo <- starwars |> filter(homeworld %in% c("Tatooine", "Naboo", "Endor"))
 #in words this asks, does the value in the homeworld variable for that row exist IN that vector, if any are true then that whole row will be retained
+
+```
+
+## Group_by() and summarize() and across
+
+getting summary statistics by groups that you specify
+
+```{r}
+#i want mean bill length by species, and sd bill length by species
+# group by doesn't do much on its own, but is very powerful using w/ summarize
+penguins_new <- penguins |>
+  group_by(species) |> 
+  summarize(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            sd_bill_length = sd(bill_length_mm, na.rm = TRUE))
+
+#i want to split up by species and island
+# n is the count, includes the na values 
+
+penguins_new2 <- penguins |>
+  group_by(species,island) |> 
+  summarize(mean_bill_length = mean(bill_length_mm),
+            sd_bill_length = sd(bill_length_mm),
+            n = n())
+
+# find the mean and sd of character height in starwars grouped by homeworld
+starwars_height <- starwars |> group_by(homeworld) |> summarize(mean_character_height = mean(height, na.rm = TRUE))
+
+
+#find the maximum, minimum flipper length and sample size for each species of penguins 
+
+super_penguins <- penguins |> group_by(species) |> summarize(max_flipper_length = max(flipper_length_mm, na.rm = TRUE), min_flipper_length = min(flipper_length_mm, na.rm = TRUE), n = n())
+#across allows to do calculation by not just any single column, but across any columns that meet desired conditions
+penguins |> 
+  group_by(species) |> 
+  summarize(across(where(is.numeric), mean, na.rm = TRUE))
 
 ```
