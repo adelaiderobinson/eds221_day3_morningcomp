@@ -1,0 +1,81 @@
+---
+title: "eds221_day3_forloops"
+author: "Adelaide Robinson"
+date: '2022-08-10'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+
+```
+
+### `if` statements
+
+```{r}
+burrito <- 2.4
+if (burrito > 2) {
+  print("I love burritos")
+}
+```
+
+```{r}
+burritos <- 0.7
+if (burritos > 2) {
+  print("I love burritos")
+}
+```
+
+## strings
+
+```{r}
+my_ships <- c("millenium falcon", "X-wing", "Tie-fighter", "Death Star")
+#does this pattern show up anywhere in this element?
+str_detect(my_ships, pattern = "X") #goes through each and looks for if it contains X (case sensitive)
+# we can use any condition within if statement that returns true or false
+phrase <- "I love burritos"
+if(str_detect(phrase, "love")) {
+  print("I am a burrito fan")
+}
+
+```
+
+## If else statement
+
+```{r}
+pika <- 89.1
+if (pika > 60){
+  print("mega pinka")
+} else {
+  print("normalpika")
+}
+#don't actually need the { brackets after the else}
+```
+
+```{r}
+marmot <- 2.8
+if(marmot < 0.5){
+  print("this is a small marmot")
+} else if(marmot >= 0.5 & marmot < 3){
+  print("a medium marmot")
+} else 
+  print("a large marmot")
+```
+
+## equal vs %in% operator
+
+test
+
+```{r}
+#remember == to ask
+#under the hood is using an if else statement
+tatooine_characters <- starwars |> 
+  filter(homeworld == "Tatooine")
+
+#the %in% operator, if any are true then keep this row
+#check for multiple positive mataches
+tataooine_endor_naboo <- starwars |> filter(homeworld %in% c("Tatooine", "Naboo", "Endor"))
+#in words this asks, does the value in the homeworld variable for that row exist IN that vector, if any are true then that whole row will be retained
+
+```
